@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">UnpasScanner</string>
+    <string name="selamatdatang">Selamat Datang di Ruangan</string>
+    <string name="nama_ruangan">207</string>
+    <string name="absen">Absen</string>
+    <string name="matakuliah">Matakuliah :</string>
+    <string name="pertemuan_ke">Pertemuan Ke :</string>
+    <string name="nama_fakultas">EAK301 - Pengantar Akuntansi II</string>
+    <string name="sks">SKS 3</string>
+    <string name="kelas">Kelas 18AKA</string>
+    <string name="waktu">Selasa 07:00 - 09:30</string>
+    <string name="nointernet">Tidak ada koneksi Internet</string>
+    <string name="title_form_ruangan">Masukan Identitas Ruangan</string>
+    <string name="fakultas">Fakultas</string>
+    <string name="ruangan">Ruangan</string>
+    <string name="selesai">Selesai</string>
+    <string name="user">User</string>
+    <string name="passwordAdmin">Password</string>
+</resources>

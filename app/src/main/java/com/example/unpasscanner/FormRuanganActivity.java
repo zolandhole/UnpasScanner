@@ -49,6 +49,7 @@ public class FormRuanganActivity extends AppCompatActivity implements Spinner.On
     final int waktu = 10 * 1000;
     private String kodeFak;
     private DBHandler dbHandler;
+    private String idruangan;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,6 +269,7 @@ public class FormRuanganActivity extends AppCompatActivity implements Spinner.On
             try {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 ruangans.add(jsonObject.getString("nama_ruangan"));
+                idruangan = jsonObject.getString("id");
                 ruangans.removeAll(Collections.singletonList(""));
                 ruangans.removeAll(Collections.singletonList("null"));
                 progressBarForm.setVisibility(View.GONE);
@@ -289,6 +291,9 @@ public class FormRuanganActivity extends AppCompatActivity implements Spinner.On
     }
 
     private void simpanKeDatabase() {
+        Log.e("ID RUANGAN ","test");
+        idruangan="6";
+        Log.e("ID RUANGAN ",idruangan);
             if (!CheckConnection.apakahTerkoneksiKeInternet(this)){
                 Toast.makeText(getApplicationContext(),"Tidak ada koneksi Internet",Toast.LENGTH_SHORT).show();
             } else {
@@ -298,11 +303,11 @@ public class FormRuanganActivity extends AppCompatActivity implements Spinner.On
                     kodeRuangan = ruangan.getKodeRuangan();
                 }
                 if (kodeRuangan == null){
-                    dbHandler.addRuangan(new Ruangan(1,textViewFak.getText().toString(),spinnerRuangan.getSelectedItem().toString()));
+                    dbHandler.addRuangan(new Ruangan(1,idruangan,spinnerRuangan.getSelectedItem().toString()));
                 } else if (kodeRuangan.equals("")) {
-                    dbHandler.addRuangan(new Ruangan(1,textViewFak.getText().toString(),spinnerRuangan.getSelectedItem().toString()));
+                    dbHandler.addRuangan(new Ruangan(1,idruangan,spinnerRuangan.getSelectedItem().toString()));
                 } else {
-                    dbHandler.updateRuangan(new Ruangan(1,textViewFak.getText().toString(),spinnerRuangan.getSelectedItem().toString()));
+                    dbHandler.updateRuangan(new Ruangan(1,idruangan,spinnerRuangan.getSelectedItem().toString()));
                 }
                 keMainActivity();
             }

@@ -1,6 +1,5 @@
 package com.example.unpasscanner;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +24,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.unpasscanner.models.Ruangan;
 import com.example.unpasscanner.utils.DBHandler;
@@ -35,7 +35,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -70,7 +72,9 @@ public class MainActivity extends AppCompatActivity{
         mainCardViewMhsAbsen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Next", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MainActivity.this, "Next", Toast.LENGTH_SHORT).show();
+                cekJadwalRuangan();
+                displayLoading();
             }
         });
     }
@@ -120,43 +124,35 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void cekJadwalRuangan() {
-        String jam = "/"+ ambil_jam();
-        String test = koderuanganDB+jam;
-        Log.e("YARUD", test);
-        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-        JsonObjectRequest jsonObjectRequest =new JsonObjectRequest(Request.Method.GET, ServerSide.URL_JADWAL + test, null,
-                new Response.Listener<JSONObject>() {
+        final String jam = ambil_jam();
+        Log.e("KODE RUANGAN ",koderuanganDB);
+        Log.e("JAM ",jam);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ServerSide.URL_JADWAL,
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        if (response.optString("error").equals("false")){
-                            Log.e("TEANGAN", response.toString());
-                            try {
-                                JSONArray dataJadwal =response.getJSONArray("message");
-                                for (int i=0; i<dataJadwal.length();i++){
-                                    JSONObject jsonObject = dataJadwal.getJSONObject(i);
-                                    id = jsonObject.getString("id");
-                                    tanggal = jsonObject.getString("tanggal");
-                                    jam_mulai = jsonObject.getString("jam_mulai");
-                                    jam_selesai = jsonObject.getString("jam_selesai");
-                                    nama_matakuliah = jsonObject.getString("nama_matakuliah");
-                                    sks = jsonObject.getString("sks");
-                                    nama_dosen = jsonObject.getString("nama_dosen");
-                                }
-                                tvMataKuliah.setText(nama_matakuliah);
-                                displaySuccess();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        } else if (response.optString("error").equals("true")){
-                            String tidakadadata;
-                            try {
-                                tidakadadata = response.getString("message");
-                                Toast.makeText(MainActivity.this, tidakadadata, Toast.LENGTH_SHORT).show();
-                                displaySuccess();
-                                mainCardViewMhsAbsen.setVisibility(View.GONE);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                    public void onResponse(String response) {
+                        Log.e("RESPONSE ",response);
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                                    if(jsonObject.optString("error").equals("true")){
+                                        String tidakadadata = jsonObject.getString("message");
+                                        Log.e("YARUD", tidakadadata);
+                                    }else if(jsonObject.optString("error").equals("false")){
+                                        JSONArray jsonArray = jsonObject.getJSONArray("message");
+                                        for (int i=0; i < jsonArray.length(); i++){
+                                            id = jsonObject.getString("id");
+                                            tanggal = jsonObject.getString("tanggal");
+                                            jam_mulai = jsonObject.getString("jam_mulai");
+                                            jam_selesai = jsonObject.getString("jam_selesai");
+                                            nama_matakuliah = jsonObject.getString("nama_matakuliah");
+                                            sks = jsonObject.getString("sks");
+                                            nama_dosen = jsonObject.getString("nama_dosen");
+                                        }
+                                        tvMataKuliah.setText(nama_matakuliah);
+                                        displaySuccess();
+                                    }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 },
@@ -165,8 +161,17 @@ public class MainActivity extends AppCompatActivity{
                     public void onErrorResponse(VolleyError error) {
                         Log.e("ERROR", error.toString());
                     }
-                });
-        requestQueue.add(jsonObjectRequest);
+                }){
+            @Override
+            protected Map<String, String> getParams(){
+                Map<String,String> params = new HashMap<>();
+                params.put("jam", jam);
+                params.put("ruangan", koderuanganDB);
+                return params;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 
     private String ambil_jam() {
@@ -232,7 +237,7 @@ public class MainActivity extends AppCompatActivity{
 
     private void keamananDialog() {
         final String usernameEdit = "admin", kataSandi = "admin123";
-        @SuppressLint("InflateParams") View subview = getLayoutInflater().inflate(R.layout.dialog_layout,null);
+        View subview = getLayoutInflater().inflate(R.layout.dialog_layout,null);
         final EditText subUserAdmin = subview.findViewById(R.id.userAdmin);
         final EditText subPasswordAdmin = subview.findViewById(R.id.passwordAdmin);
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.todoDialogLight);

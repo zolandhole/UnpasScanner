@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import java.util.Objects;
 import java.util.Timer;
@@ -21,7 +22,8 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
     private Timer timer;
     final int waktu = 10 * 1000;
     final int waktuBerjalan = 30 * (60 * 1000);
-    private String dataNim;
+    //testing nim
+    private String dataNim="00002";
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -54,7 +56,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         };
         handler.removeCallbacks(runnable);
         handler.postDelayed(runnable,waktuBerjalan);
-        dataNim = Objects.requireNonNull(getIntent().getExtras()).getString("LISTNIM");
+        //dataNim = Objects.requireNonNull(getIntent().getExtras()).getString("LISTNIM");
     }
 
     @Override
@@ -81,6 +83,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
     public void handleResult(final com.google.zxing.Result result) {
         mScannerView.stopCameraPreview();
         String hasilScanEncripted = result.getText();
+        Log.e("HASIL SCAN", hasilScanEncripted);
         Intent intent = new Intent(ScanQRActivity.this, ResultScanActivity.class);
         intent.putExtra("HASILSCAN", hasilScanEncripted);
         intent.putExtra("DATANIM", dataNim);

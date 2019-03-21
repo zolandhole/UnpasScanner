@@ -28,6 +28,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.unpasscanner.models.Ruangan;
 import com.example.unpasscanner.utils.DBHandler;
+import com.example.unpasscanner.utils.ScanQRActivity;
 import com.example.unpasscanner.utils.ServerSide;
 
 import org.json.JSONArray;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity{
     private CardView mainCardViewSetting, mainCardViewMhsAbsen;
     private DBHandler dBHandler;
     private String koderuanganDB, namaRuanganDB;
-    private TextView namaRuangan, tvMataKuliah;
+    private TextView namaRuangan, tvMataKuliah, tvSks, tvKelas, tvJadwal;
     private String id,tanggal,jam_mulai,jam_selesai,nama_fakultas,nama_jurusan,nama_matakuliah,sks,nama_dosen;
 
     @Override
@@ -88,6 +89,9 @@ public class MainActivity extends AppCompatActivity{
         mainCardViewSetting = findViewById(R.id.MainCardViewSetting);
         namaRuangan = findViewById(R.id.namaRuangan);
         tvMataKuliah = findViewById(R.id.tvMataKuliah);
+        tvSks = findViewById(R.id.tvSks);
+        tvKelas = findViewById(R.id.tvKelas);
+        tvJadwal = findViewById(R.id.tvJadwal);
     }
 
     private void initObject() {
@@ -97,6 +101,7 @@ public class MainActivity extends AppCompatActivity{
     private void initRunning() {
         displayLoading();
         checkInternet();
+        cekJadwalRuangan();
     }
 
     private void checkInternet() {
@@ -140,16 +145,21 @@ public class MainActivity extends AppCompatActivity{
                                     }else if(jsonObject.optString("error").equals("false")){
                                         JSONArray jsonArray = jsonObject.getJSONArray("message");
                                         for (int i=0; i < jsonArray.length(); i++){
-                                            id = jsonObject.getString("id");
-                                            tanggal = jsonObject.getString("tanggal");
-                                            jam_mulai = jsonObject.getString("jam_mulai");
-                                            jam_selesai = jsonObject.getString("jam_selesai");
-                                            nama_matakuliah = jsonObject.getString("nama_matakuliah");
-                                            sks = jsonObject.getString("sks");
-                                            nama_dosen = jsonObject.getString("nama_dosen");
+                                            Log.e("ARRAY JSON",jsonArray.toString());
+                                            JSONObject jsonObjectHasil = jsonArray.getJSONObject(i);
+                                            id = jsonObjectHasil.getString("id");
+                                            tanggal = jsonObjectHasil.getString("tanggal");
+                                            jam_mulai = jsonObjectHasil.getString("jam_mulai");
+                                            jam_selesai = jsonObjectHasil.getString("jam_selesai");
+                                            nama_matakuliah = jsonObjectHasil.getString("nama_matakuliah");
+                                            sks = jsonObjectHasil.getString("sks");
+                                            nama_dosen = jsonObjectHasil.getString("nama_dosen");
                                         }
                                         tvMataKuliah.setText(nama_matakuliah);
+                                        tvSks.setText("SKS "+sks);
+                                        tvJadwal.setText("Jam Mata Kuliah: "+jam_mulai+" - "+jam_selesai);
                                         displaySuccess();
+                                        keScanActivity("00002");
                                     }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -268,5 +278,12 @@ public class MainActivity extends AppCompatActivity{
         alertDialog.show();
         Button yes = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
         yes.setTextColor(Color.rgb(29,145,36));
+    }
+
+    private void keScanActivity(String listNim) {
+        Toast.makeText(this, listNim, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(MainActivity.this, ScanQRActivity.class);
+        intent.putExtra("LISTNIM",listNim);
+        startActivity(intent);
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ public class ResultScanActivity extends AppCompatActivity {
         assert hasilScan != null;
         try {
             decripted = AESUtils.decrypt(hasilScan).trim();
+            Log.e("DECRYPT QR",decripted);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package com.example.unpasscanner.utils;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,8 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.unpasscanner.R;
+import com.example.unpasscanner.models.SerializableMahasiswa;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -23,6 +26,9 @@ public class ResultScanActivity extends AppCompatActivity {
     private MediaPlayer mp, nmp;
     private ImageView imageViewSuccess;
     private TextView textViewResultNama, textViewDoa;
+    ArrayList<SerializableMahasiswa> arrayListMahasiswa;
+    ArrayList<String> arrayListMac;
+    Intent intentList;
 
     @SuppressLint({"SetTextI18n", "ResourceAsColor", "SimpleDateFormat"})
     @Override
@@ -70,7 +76,7 @@ public class ResultScanActivity extends AppCompatActivity {
 
         int jumlahKata = countWords(decripted);
 
-        if (!(jumlahKata == 4)){
+        if (!(jumlahKata == 1)){
             nmp.start();
             imageViewSuccess.setImageResource(R.drawable.icon_question);
             textViewDoa.setText("Hmm !");
@@ -78,30 +84,38 @@ public class ResultScanActivity extends AppCompatActivity {
             textViewResultNama.setVisibility(View.GONE);
         } else {
             textViewResultNama.setVisibility(View.VISIBLE);
+            intentList = getIntent();
+            arrayListMahasiswa = (ArrayList<SerializableMahasiswa>) intentList.getSerializableExtra("LISTNIM");
+            arrayListMac = intentList.getStringArrayListExtra("LISTMACADDRESS");
+            Log.e("SCANNER RESULT NIM", arrayListMahasiswa.get(0).getNim());
+            //Log.e("SCANNER RESULT BT",arrayListMac.get(0));
+            Log.e("NIM SCANNER", decripted);
             prosesHasil();
         }
+
+
     }
 
     @SuppressLint({"SetTextI18n", "ResourceAsColor"})
     private void prosesHasil() {
         String parseHasil[] = decripted.split(" ",3);
-        final String namaHasil = parseHasil[1];
+        //final String namaHasil = parseHasil[1];
         final String nimHasil = parseHasil[0];
-        final String waktuHasil = parseHasil[2];
+        //final String waktuHasil = parseHasil[2];
 
-        final String dataNim = Objects.requireNonNull(getIntent().getExtras()).getString("DATANIM");
+        final String dataNim = arrayListMahasiswa.get(0).getNim();
         assert dataNim != null;
         if (dataNim.toLowerCase().contains(nimHasil.toLowerCase())){
-            if (waktuHasil.equals(dateformat)){
-                textViewResultNama.setText(namaHasil);
-                mp.start();
-            } else {
-                imageViewSuccess.setImageResource(R.drawable.icon_sad_red);
-                textViewDoa.setText("Ups !");
-                textViewDoa.setTextColor(R.color.colorPrimary);
-                textViewResultNama.setText("QR Code kadaluarsa, Silahkan Generate kembali");
-                nmp.start();
-            }
+//            if (waktuHasil.equals(dateformat)){
+//                textViewResultNama.setText(namaHasil);
+//                mp.start();
+//            } else {
+//                imageViewSuccess.setImageResource(R.drawable.icon_sad_red);
+//                textViewDoa.setText("Ups !");
+//                textViewDoa.setTextColor(R.color.colorPrimary);
+//                textViewResultNama.setText("QR Code kadaluarsa, Silahkan Generate kembali");
+//                nmp.start();
+//            }
 
         } else {
             imageViewSuccess.setImageResource(R.drawable.icon_sad_red);

@@ -26,7 +26,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.unpasscanner.models.ListMahasiswa;
 import com.example.unpasscanner.models.Ruangan;
+import com.example.unpasscanner.models.SerializableMahasiswa;
 import com.example.unpasscanner.utils.DBHandler;
 import com.example.unpasscanner.utils.ScanQRActivity;
 import com.example.unpasscanner.utils.ServerSide;
@@ -35,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -143,6 +146,8 @@ public class MainActivity extends AppCompatActivity{
                                         String tidakadadata = jsonObject.getString("message");
                                         Log.e("YARUD", tidakadadata);
                                     }else if(jsonObject.optString("error").equals("false")){
+                                        ArrayList<SerializableMahasiswa> arrayListMahasiswa;
+                                        arrayListMahasiswa = new ArrayList<>();;
                                         JSONArray jsonArray = jsonObject.getJSONArray("message");
                                         for (int i=0; i < jsonArray.length(); i++){
                                             Log.e("ARRAY JSON",jsonArray.toString());
@@ -154,12 +159,26 @@ public class MainActivity extends AppCompatActivity{
                                             nama_matakuliah = jsonObjectHasil.getString("nama_matakuliah");
                                             sks = jsonObjectHasil.getString("sks");
                                             nama_dosen = jsonObjectHasil.getString("nama_dosen");
+                                            JSONArray jsonArray1 = jsonObjectHasil.getJSONArray("list_user");
+                                            for(int j=0; j<jsonArray1.length(); j++){
+                                                JSONObject jsonObjectListUser = jsonArray1.getJSONObject(j);
+                                                Log.e("LIST JSON LIST", jsonArray1.getJSONObject(j).toString());
+                                                ListMahasiswa listMahasiswa = new ListMahasiswa();
+                                                listMahasiswa.setNim(jsonObjectListUser.getString("nim"));
+                                                listMahasiswa.setNama(jsonObjectListUser.getString("nama"));
+                                                listMahasiswa.setMac_user(jsonObjectListUser.getString("mac_user"));
+                                                arrayListMahasiswa.add(new SerializableMahasiswa(listMahasiswa.getNim(),listMahasiswa.getNama(),listMahasiswa.getMac_user()));
+                                            }
+                                        }
+                                        Log.e("List Mahasiswa",arrayListMahasiswa.toString());
+                                        for(int i=0;i<arrayListMahasiswa.size();i++){
+                                            Log.e("MAHASISWA GET",arrayListMahasiswa.get(i).getNim());
                                         }
                                         tvMataKuliah.setText(nama_matakuliah);
                                         tvSks.setText("SKS "+sks);
                                         tvJadwal.setText("Jam Mata Kuliah: "+jam_mulai+" - "+jam_selesai);
                                         displaySuccess();
-                                        keScanActivity("00002");
+                                        keScanActivity(arrayListMahasiswa);
                                     }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -280,10 +299,10 @@ public class MainActivity extends AppCompatActivity{
         yes.setTextColor(Color.rgb(29,145,36));
     }
 
-    private void keScanActivity(String listNim) {
-        Toast.makeText(this, listNim, Toast.LENGTH_SHORT).show();
+    private void keScanActivity(ArrayList <SerializableMahasiswa> listMahasiswas) {
+        Toast.makeText(this, "Menuju Scanner", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(MainActivity.this, ScanQRActivity.class);
-        intent.putExtra("LISTNIM",listNim);
+        intent.putExtra("LISTNIM",listMahasiswas);
         startActivity(intent);
     }
 }

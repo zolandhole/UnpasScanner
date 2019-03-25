@@ -149,7 +149,7 @@ public class ResultScanActivity extends AppCompatActivity {
             imageViewSuccess.setImageResource(R.drawable.icon_sad_red);
             textViewDoa.setText("Ups !");
             textViewDoa.setTextColor(R.color.colorPrimary);
-            textViewResultNama.setText("QR Code kadaluarsa, Silahkan Generate kembali");
+            textViewResultNama.setText("Mac Address atau Nim Anda Tidak Terdeteksi");
             nmp.start();
 
         }

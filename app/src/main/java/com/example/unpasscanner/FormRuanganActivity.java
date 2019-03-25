@@ -1,7 +1,12 @@
 package com.example.unpasscanner;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -55,7 +60,12 @@ public class FormRuanganActivity extends AppCompatActivity implements Spinner.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_ruangan);
-
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            int requestCameraPermissionID = 1003;
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, requestCameraPermissionID);
+        }else{
+            
+        }
         initView();
         initListener();
         initRunning();
@@ -348,5 +358,16 @@ public class FormRuanganActivity extends AppCompatActivity implements Spinner.On
     protected void onResume() {
         super.onResume();
         cekInternet();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+                //finish();
+            }else{
+                //finish();
+            }
+        }
     }
 }

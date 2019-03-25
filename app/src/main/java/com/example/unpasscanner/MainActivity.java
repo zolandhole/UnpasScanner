@@ -1,12 +1,17 @@
 package com.example.unpasscanner;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -308,6 +313,10 @@ public class MainActivity extends AppCompatActivity{
         intent.putExtra("LISTNIM",listMahasiswas);
         intent.putExtra("IDMK",idMk);
         startActivity(intent);
-        finish();
+        //finish();
     }
+
+
+
+
 }

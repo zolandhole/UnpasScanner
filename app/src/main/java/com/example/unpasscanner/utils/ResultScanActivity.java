@@ -143,8 +143,8 @@ public class ResultScanActivity extends AppCompatActivity {
             textViewResultNama.setText(namaMahasiswa);
             absensiMahasiswa();
             mp.start();
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(this, MainActivity.class);
+//            startActivity(intent);
         }else{
             imageViewSuccess.setImageResource(R.drawable.icon_sad_red);
             textViewDoa.setText("Ups !");

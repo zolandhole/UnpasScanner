@@ -8,8 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -42,6 +44,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
     BluetoothAdapter bluetoothAdapter;
     ArrayList<String> listMacAddress;
     private String idMk;
+    private CountDownTimer countd;
 
     public void enableDisableBT(){
         if(!bluetoothAdapter.enable()){
@@ -171,21 +174,14 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
             permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
             if (permissionCheck != 0) {
 
-                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001); //Any number
+                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1002); //Any number
             }
         }else{
             Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
-                finish();
-            }
-        }
-    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -195,17 +191,13 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         listMacAddress = new ArrayList<>();
         enableDisableBT();
         btnDiscover();
-        btnEnableDisable_Discoverable();
+        //btnEnableDisable_Discoverable();
         mScannerView = new ZXingScannerView(ScanQRActivity.this);
         Handler handler = new Handler();
         setContentView(mScannerView);
         mScannerView.setKeepScreenOn(true);
         mScannerView.setResultHandler(ScanQRActivity.this);
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
-            int requestCameraPermissionID = 1001;
-            ActivityCompat.requestPermissions(ScanQRActivity.this, new String[]{Manifest.permission.CAMERA}, requestCameraPermissionID);
-            finish();
-        }
+
 //        mScannerView.startCamera(1);
         Runnable runnable = new Runnable() {
             @Override
@@ -218,6 +210,20 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         intentList= getIntent();
         arrayListMahasiswa = (ArrayList<SerializableMahasiswa>) intentList.getSerializableExtra("LISTNIM");
         idMk = intentList.getStringExtra("IDMK");
+
+        countd = new CountDownTimer(10000,1000){
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                AsyncTask<Void,Void,String> execute = new AmbilData();
+                execute.execute();
+            }
+        };
+        countd.start();
     }
 
     @Override
@@ -252,7 +258,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         intent.putExtra("IDMK",idMk);
 //        Log.e("LIST MAHASISWA",listMacAddress.get(0));
         startActivity(intent);
-        finish();
+        //finish();
         //mScannerView.resumeCameraPreview(ScanQRActivity.this);
     }
 
@@ -266,4 +272,31 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         timer.purge();
         timer = new Timer();
     }
+
+    public class AmbilData extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                unregisterReceiver(mBroadcastReceiver3);
+                btnDiscover();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            countd.start();
+        }
+    }
+
 }

@@ -41,6 +41,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
     ArrayList<SerializableMahasiswa> arrayListMahasiswa;
     BluetoothAdapter bluetoothAdapter;
     ArrayList<String> listMacAddress;
+    private String idMk;
 
     public void enableDisableBT(){
         if(!bluetoothAdapter.enable()){
@@ -60,7 +61,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
 
                 switch(state){
                     case BluetoothAdapter.STATE_OFF:
-                        Log.d(TAG, "onReceive: STATE OFF");
+                        Log.d(TAG, "Receiver: OFF");
                         break;
                     case BluetoothAdapter.STATE_TURNING_OFF:
                         Log.d(TAG, "mBroadcastReceiver1: STATE TURNING OFF");
@@ -216,6 +217,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         handler.postDelayed(runnable,waktuBerjalan);
         intentList= getIntent();
         arrayListMahasiswa = (ArrayList<SerializableMahasiswa>) intentList.getSerializableExtra("LISTNIM");
+        idMk = intentList.getStringExtra("IDMK");
     }
 
     @Override
@@ -247,9 +249,11 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         intent.putExtra("HASILSCAN", hasilScanEncripted);
         intent.putExtra("LISTNIM",arrayListMahasiswa);
         intent.putExtra("LISTMACADDRESS",listMacAddress);
-        Log.e("LIST MAHASISWA",arrayListMahasiswa.toString());
+        intent.putExtra("IDMK",idMk);
+//        Log.e("LIST MAHASISWA",listMacAddress.get(0));
         startActivity(intent);
-        mScannerView.resumeCameraPreview(ScanQRActivity.this);
+        finish();
+        //mScannerView.resumeCameraPreview(ScanQRActivity.this);
     }
 
     private void cekInternet(){

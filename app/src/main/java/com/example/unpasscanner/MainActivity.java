@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity{
     private String koderuanganDB, namaRuanganDB;
     private TextView namaRuangan, tvMataKuliah, tvSks, tvKelas, tvJadwal;
     private String id,tanggal,jam_mulai,jam_selesai,nama_fakultas,nama_jurusan,nama_matakuliah,sks,nama_dosen;
+    private String idMk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity{
 
     private void cekJadwalRuangan() {
         final String jam = ambil_jam();
-        Log.e("KODE RUANGAN ",koderuanganDB);
+        //Log.e("KODE RUANGAN ",koderuanganDB);
         Log.e("JAM ",jam);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ServerSide.URL_JADWAL,
                 new Response.Listener<String>() {
@@ -145,6 +146,7 @@ public class MainActivity extends AppCompatActivity{
                                     if(jsonObject.optString("error").equals("true")){
                                         String tidakadadata = jsonObject.getString("message");
                                         Log.e("YARUD", tidakadadata);
+                                        displaySuccess();
                                     }else if(jsonObject.optString("error").equals("false")){
                                         ArrayList<SerializableMahasiswa> arrayListMahasiswa;
                                         arrayListMahasiswa = new ArrayList<>();;
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity{
                                         for (int i=0; i < jsonArray.length(); i++){
                                             Log.e("ARRAY JSON",jsonArray.toString());
                                             JSONObject jsonObjectHasil = jsonArray.getJSONObject(i);
+                                            idMk = jsonObjectHasil.getString("id");
                                             id = jsonObjectHasil.getString("id");
                                             tanggal = jsonObjectHasil.getString("tanggal");
                                             jam_mulai = jsonObjectHasil.getString("jam_mulai");
@@ -178,7 +181,7 @@ public class MainActivity extends AppCompatActivity{
                                         tvSks.setText("SKS "+sks);
                                         tvJadwal.setText("Jam Mata Kuliah: "+jam_mulai+" - "+jam_selesai);
                                         displaySuccess();
-                                        keScanActivity(arrayListMahasiswa);
+                                        keScanActivity(arrayListMahasiswa,idMk);
                                     }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -299,10 +302,12 @@ public class MainActivity extends AppCompatActivity{
         yes.setTextColor(Color.rgb(29,145,36));
     }
 
-    private void keScanActivity(ArrayList <SerializableMahasiswa> listMahasiswas) {
+    private void keScanActivity(ArrayList <SerializableMahasiswa> listMahasiswas, String idMk) {
         Toast.makeText(this, "Menuju Scanner", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(MainActivity.this, ScanQRActivity.class);
         intent.putExtra("LISTNIM",listMahasiswas);
+        intent.putExtra("IDMK",idMk);
         startActivity(intent);
+        finish();
     }
 }

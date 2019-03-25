@@ -183,12 +183,11 @@ public class ResultScanActivity extends AppCompatActivity {
     }
 
     private void absensiMahasiswa() {
-        final String jam = ambil_jam();
         Date calender = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dfJam = new SimpleDateFormat("HH:mm:ss");
         final String waktuAbsen = df.format(calender);
-        Log.e("JAM ",jam);
-        Log.e("WAKTU ABSEN ",jam);
+        final String jamAbsen = dfJam.format(calender);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ServerSide.URL_ABSEN,
                 new Response.Listener<String>() {
                     @Override
@@ -223,19 +222,12 @@ public class ResultScanActivity extends AppCompatActivity {
                 Map<String,String> params = new HashMap<>();
                 params.put("user", nimMahasiswa);
                 params.put("id_mk", idMk);
-                params.put("jam", jam);
+                params.put("jam", jamAbsen);
                 params.put("waktu_absen", waktuAbsen);
                 return params;
             }
         };
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
-    }
-
-    private String ambil_jam() {
-        Calendar calendar= Calendar.getInstance();
-        int jam = calendar.get(Calendar.HOUR_OF_DAY);
-        int menit = calendar.get(Calendar.MINUTE);
-        return Integer.toString(jam)+":"+Integer.toString(menit);
     }
 }

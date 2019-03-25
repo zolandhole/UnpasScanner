@@ -42,14 +42,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity{
 
+    private String TAG = "MainActivity";
     private ConstraintLayout clSuccess, clLoading, clFailed;
     private CardView cvRetry;
     private CardView mainCardViewSetting, mainCardViewMhsAbsen;
@@ -138,9 +141,11 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void cekJadwalRuangan() {
-        final String jam = ambil_jam();
+        Date calender = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+        final String waktuSekarang = df.format(calender);
+        Log.e("JAM",waktuSekarang);
         //Log.e("KODE RUANGAN ",koderuanganDB);
-        Log.e("JAM ",jam);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ServerSide.URL_JADWAL,
                 new Response.Listener<String>() {
                     @Override
@@ -202,20 +207,13 @@ public class MainActivity extends AppCompatActivity{
             @Override
             protected Map<String, String> getParams(){
                 Map<String,String> params = new HashMap<>();
-                params.put("jam", jam);
+                params.put("jam", waktuSekarang);
                 params.put("ruangan", koderuanganDB);
                 return params;
             }
         };
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
-    }
-
-    private String ambil_jam() {
-        Calendar calendar= Calendar.getInstance();
-        int jam = calendar.get(Calendar.HOUR_OF_DAY);
-        int menit = calendar.get(Calendar.MINUTE);
-        return Integer.toString(jam)+":"+Integer.toString(menit);
     }
 
     private void getDatabase() {

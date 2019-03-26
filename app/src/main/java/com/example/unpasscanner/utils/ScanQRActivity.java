@@ -230,6 +230,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
     protected void onResume() {
         super.onResume();
         cekInternet();
+        mScannerView.stopCamera();
         mScannerView.startCamera(1);
     }
 
@@ -258,6 +259,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         intent.putExtra("IDMK",idMk);
 //        Log.e("LIST MAHASISWA",listMacAddress.get(0));
         startActivity(intent);
+        mScannerView.startCamera(1);
         //finish();
         //mScannerView.resumeCameraPreview(ScanQRActivity.this);
     }

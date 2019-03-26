@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity{
     private TextView namaRuangan, tvMataKuliah, tvSks, tvKelas, tvJadwal;
     private String id,tanggal,jam_mulai,jam_selesai,nama_fakultas,nama_jurusan,nama_matakuliah,sks,nama_dosen;
     private String idMk;
+    private String ketersediaanJadwal="";
+    ArrayList<SerializableMahasiswa> arrayListMahasiswa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,9 @@ public class MainActivity extends AppCompatActivity{
                 //Toast.makeText(MainActivity.this, "Next", Toast.LENGTH_SHORT).show();
                 cekJadwalRuangan();
                 displayLoading();
+                if(!ketersediaanJadwal.equals("")) {
+                    keScanActivity(arrayListMahasiswa, idMk);
+                }
             }
         });
     }
@@ -152,13 +157,13 @@ public class MainActivity extends AppCompatActivity{
                     public void onResponse(String response) {
                         Log.e("RESPONSE ",response);
                         try {
+                            ketersediaanJadwal="";
                             JSONObject jsonObject = new JSONObject(response);
                                     if(jsonObject.optString("error").equals("true")){
                                         String tidakadadata = jsonObject.getString("message");
                                         Log.e("YARUD", tidakadadata);
                                         displaySuccess();
                                     }else if(jsonObject.optString("error").equals("false")){
-                                        ArrayList<SerializableMahasiswa> arrayListMahasiswa;
                                         arrayListMahasiswa = new ArrayList<>();;
                                         JSONArray jsonArray = jsonObject.getJSONArray("message");
                                         for (int i=0; i < jsonArray.length(); i++){
@@ -191,7 +196,7 @@ public class MainActivity extends AppCompatActivity{
                                         tvSks.setText("SKS "+sks);
                                         tvJadwal.setText("Jam Mata Kuliah: "+jam_mulai+" - "+jam_selesai);
                                         displaySuccess();
-                                        keScanActivity(arrayListMahasiswa,idMk);
+                                        ketersediaanJadwal="tersedia";
                                     }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -202,6 +207,7 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("ERROR", error.toString());
+                        ketersediaanJadwal="";
                     }
                 }){
             @Override

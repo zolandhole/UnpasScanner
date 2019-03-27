@@ -48,9 +48,10 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
 
     public void enableDisableBT(){
         if(!bluetoothAdapter.enable()){
-
+            Log.e(TAG, "enableDisableBT: BLuetooth DISABLE");
         }else{
-            Toast.makeText(this, "BLUETOOTH SUDAN ON", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "BLUETOOTH SUDAN AKTIF", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "enableDisableBT: BLUETOOTH ACTIVATED");
         }
     }
 
@@ -259,7 +260,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
         intent.putExtra("IDMK",idMk);
 //        Log.e("LIST MAHASISWA",listMacAddress.get(0));
         startActivity(intent);
-        mScannerView.startCamera(1);
+        mScannerView.resumeCameraPreview(this);
         //finish();
         //mScannerView.resumeCameraPreview(ScanQRActivity.this);
     }

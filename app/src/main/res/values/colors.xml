@@ -23,6 +23,9 @@
     <color name="indicator_unselected">#4D000000</color>
     <color name="orange">#FF9800</color>
     <color name="green">#4CAF50</color>
+    <color name="hijau_ngora">#4CAF50</color>
     <color name="black">#000000</color>
     <color name="bodas">#ffffff</color>
+    <color name="putih">#ffffff</color>
+
 </resources>

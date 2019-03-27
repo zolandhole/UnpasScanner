@@ -231,7 +231,7 @@ public class ScanQRActivity extends AppCompatActivity implements ZXingScannerVie
     protected void onResume() {
         super.onResume();
         cekInternet();
-        mScannerView.stopCamera();
+//        mScannerView.stopCamera();
         mScannerView.startCamera(1);
     }
 

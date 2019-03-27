@@ -163,6 +163,9 @@ public class MainActivity extends AppCompatActivity{
                                         String tidakadadata = jsonObject.getString("message");
                                         Log.e("YARUD", tidakadadata);
                                         displaySuccess();
+                                        tvMataKuliah.setText("Tidak Ada Jadwal");
+                                        tvSks.setText("Tidak Ada Jadwal");
+                                        tvJadwal.setText("Tidak Ada Jadwal");
                                     }else if(jsonObject.optString("error").equals("false")){
                                         arrayListMahasiswa = new ArrayList<>();;
                                         JSONArray jsonArray = jsonObject.getJSONArray("message");

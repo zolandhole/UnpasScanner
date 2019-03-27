@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,6 +52,9 @@ public class ResultScanActivity extends AppCompatActivity {
     private String nimMahasiswa,idMk;
     private String resultQR;
     private CountDownTimer countDownTimer;
+    private Date jamQR;
+    private long perbedaanMenit;
+    private boolean status = false;
 
 
     @SuppressLint({"SetTextI18n", "ResourceAsColor", "SimpleDateFormat"})
@@ -130,6 +134,19 @@ public class ResultScanActivity extends AppCompatActivity {
                     case "gagal":
                         kirimUserKeMain();
                         break;
+                    case "berhasil":
+
+                        break;
+                    case "NI tidak sesuai":
+                        finish();
+                        break;
+                    case "Mac BT tidak ditemukan":
+                        finish();
+                        break;
+
+                    case "data sesuai":
+                        kirimUserKeMain();
+                        break;
                 }
             }
         };
@@ -138,11 +155,99 @@ public class ResultScanActivity extends AppCompatActivity {
     private void prosesHasil() {
 
         String parseHasil[] = decripted.split(" ",2);
-        final String nimHasil = parseHasil[0];
-        final String waktuHasil = parseHasil[1];
+        String nimHasil = parseHasil[0];
+        String waktuUser = parseHasil[1];
 
+        Date scannerTime = Calendar.getInstance().getTime();
+        SimpleDateFormat formatBaru = new SimpleDateFormat("yyy-MM-dd/HH:mm:ss");
+        String waktuScanner = formatBaru.format(scannerTime);
 
+        Date dateUser = null;
+        Date dateScanner = null;
 
+        try {
+            dateUser = formatBaru.parse(waktuUser);
+            dateScanner = formatBaru.parse(waktuScanner);
+
+            long diff = dateScanner.getTime() - dateUser.getTime();
+
+//            perbedaanMenit = diff / 1000 % 60;
+            perbedaanMenit = diff / (60 * 1000) % 60;
+//            long diffHours = diff / (60 * 60 * 1000) % 24;
+//            long diffDays = diff / (24 * 60 * 60 * 1000);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        if (perbedaanMenit >=0 && perbedaanMenit < 2){
+            pengecekanNomorInduk(nimHasil);
+        } else {
+            resultQR = "gagal";
+            nmp.start();
+            imageViewSuccess.setImageResource(R.drawable.icon_sad_red);
+            textViewDoa.setText("Maaf !");
+            textViewResultNama.setText("QRCODE Kadaluarsa");
+            textViewResultNama.setVisibility(View.VISIBLE);
+            countDownTimer.start();
+        }
+    }
+
+    private void pengecekanNomorInduk(String nimHasil) {
+        for (int ni=0; ni < arrayListMahasiswa.size(); ni++){
+            if (arrayListMahasiswa.get(ni).getNim().equals(nimHasil)){
+                status=true;
+                break;
+            }else{
+                status=false;
+            }
+        }
+
+        if(!status){
+            resultQR="NI tidak sesuai";
+            nmp.start();
+            imageViewSuccess.setImageResource(R.drawable.icon_sad_red);
+            textViewDoa.setText("Maaf !");
+            textViewResultNama.setText("Anda tidak terdaftar di mata kuliah ini");
+            textViewResultNama.setVisibility(View.VISIBLE);
+            countDownTimer.start();
+        }else{
+            cekMacAddress();
+        }
+    }
+
+    private void cekMacAddress() {
+        status=false;
+        String namaMahasiswa="";
+        for (int ni=0; ni < arrayListMahasiswa.size(); ni++){
+            for (int mac=0; mac < arrayListMac.size(); mac++) {
+                if (arrayListMac.get(mac).equals(arrayListMahasiswa.get(ni).getMac_user())) {
+                    status = true;
+                    namaMahasiswa = arrayListMahasiswa.get(ni).getNama();
+                    break;
+                }
+            }
+        }
+        if(!status){
+            resultQR="Mac BT tidak ditemukan";
+            imageViewSuccess.setImageResource(R.drawable.icon_sad_red);
+            textViewDoa.setText("Maaf !");
+            textViewResultNama.setText("Bluetooth anda tidak terdeteksi \natau tidak sesuai dengan data server");
+            textViewResultNama.setVisibility(View.VISIBLE);
+            nmp.start();
+            countDownTimer.start();
+        }else{
+            resultQR="data sesuai";
+            textViewResultNama.setText(namaMahasiswa);
+            absensiMahasiswa();
+            mp.start();
+            countDownTimer.start();
+
+        }
+
+    }
+
+    private void pengecekanBluetooth() {
         String dataakhir="";
         String namaMahasiswa="";
         for(int index1=0;index1<arrayListMahasiswa.size();index1++){
@@ -158,21 +263,21 @@ public class ResultScanActivity extends AppCompatActivity {
                 }
             }
         }
-//        Log.e("HASIL",dataakhir);
-//        if(dataakhir.equals("absen")){
-//            textViewResultNama.setText(namaMahasiswa);
-//            absensiMahasiswa();
-//            mp.start();
-//            Intent intent = new Intent(this, MainActivity.class);
-//            startActivity(intent);
-//        }else{
-//            imageViewSuccess.setImageResource(R.drawable.icon_sad_red);
-//            textViewDoa.setText("Ups !");
-//            textViewDoa.setTextColor(R.color.colorPrimary);
-//            textViewResultNama.setText("Mac Address atau Nim Anda Tidak Terdeteksi");
-//            nmp.start();
-//
-//        }
+        Log.e("HASIL",dataakhir);
+        if(dataakhir.equals("absen")){
+            textViewResultNama.setText(namaMahasiswa);
+            absensiMahasiswa();
+            mp.start();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }else{
+            imageViewSuccess.setImageResource(R.drawable.icon_sad_red);
+            textViewDoa.setText("Ups !");
+            textViewDoa.setTextColor(R.color.colorPrimary);
+            textViewResultNama.setText("Mac Address atau Nim Anda Tidak Terdeteksi");
+            nmp.start();
+
+        }
     }
 
 //    private SimpleDateFormat getWaktuScanner() {

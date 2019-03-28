@@ -139,6 +139,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                app:cardElevation="0dp"
                 app:cardBackgroundColor="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -146,7 +147,6 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
-                    android:background="@drawable/border"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
@@ -155,18 +155,18 @@
                     android:paddingEnd="15dp">
 
                     <ImageView
-                        android:layout_width="75dp"
-                        android:layout_height="75dp"
-                        android:background="@drawable/qr"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:contentDescription="@null"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_absen" />
+                        android:src="@drawable/usermainactivity" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:text="@string/absen"
+                        android:textStyle="bold"
                         android:textColor="@color/hejotaikuda"
                         android:textAlignment="center" />
 

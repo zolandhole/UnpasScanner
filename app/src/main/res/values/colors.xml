@@ -28,4 +28,11 @@
     <color name="bodas">#ffffff</color>
     <color name="putih">#ffffff</color>
 
+    <color name="color1camera">#8a000000</color>
+    <color name="color2camera">#de000000</color>
+    <color name="color3camera">#fff44336</color>
+    <color name="color4camera">#ffff9800</color>
+    <color name="colorResult">#c04CAF50</color>
+
+
 </resources>

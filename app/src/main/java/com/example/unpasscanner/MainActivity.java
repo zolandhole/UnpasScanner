@@ -35,6 +35,7 @@ import com.example.unpasscanner.models.ListMahasiswa;
 import com.example.unpasscanner.models.Ruangan;
 import com.example.unpasscanner.models.SerializableMahasiswa;
 import com.example.unpasscanner.utils.DBHandler;
+import com.example.unpasscanner.utils.ScanActivity;
 import com.example.unpasscanner.utils.ScanQRActivity;
 import com.example.unpasscanner.utils.ServerSide;
 
@@ -316,10 +317,15 @@ public class MainActivity extends AppCompatActivity{
 
     private void keScanActivity(ArrayList <SerializableMahasiswa> listMahasiswas, String idMk) {
         Toast.makeText(this, "Menuju Scanner", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(MainActivity.this, ScanQRActivity.class);
-        intent.putExtra("LISTNIM",listMahasiswas);
-        intent.putExtra("IDMK",idMk);
-        startActivity(intent);
+//        Intent intent = new Intent(MainActivity.this, ScanQRActivity.class);
+//        intent.putExtra("LISTNIM",listMahasiswas);
+//        intent.putExtra("IDMK",idMk);
+//        startActivity(intent);
+
+        Intent intentscanner = new Intent (this, ScanActivity.class);
+        intentscanner.putExtra("LISTNIM",listMahasiswas);
+        intentscanner.putExtra("IDMK",idMk);
+        startActivity(intentscanner);
         //finish();
     }
 

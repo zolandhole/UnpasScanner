@@ -1,13 +1,10 @@
 package com.example.unpasscanner.utils;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,22 +18,16 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.unpasscanner.MainActivity;
 import com.example.unpasscanner.R;
-import com.example.unpasscanner.models.ListMahasiswa;
 import com.example.unpasscanner.models.SerializableMahasiswa;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -57,7 +48,6 @@ public class ResultScanActivity extends AppCompatActivity {
     private boolean status = false;
 
 
-    @SuppressLint({"SetTextI18n", "ResourceAsColor", "SimpleDateFormat"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -273,7 +263,7 @@ public class ResultScanActivity extends AppCompatActivity {
         }else{
             imageViewSuccess.setImageResource(R.drawable.icon_sad_red);
             textViewDoa.setText("Ups !");
-            textViewDoa.setTextColor(R.color.colorPrimary);
+            textViewDoa.setTextColor(getResources().getColor(R.color.colorPrimary));
             textViewResultNama.setText("Mac Address atau Nim Anda Tidak Terdeteksi");
             nmp.start();
 

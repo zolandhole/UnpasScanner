@@ -148,8 +148,11 @@ public class ResultScanActivity extends AppCompatActivity {
         String nimHasil = parseHasil[0];
         String waktuUser = parseHasil[1];
 
+        Log.e("Proses Hasil ", decripted);
+        Log.e("Proses Hasil ", nimHasil);
+        Log.e("Proses Hasil ", waktuUser);
         Date scannerTime = Calendar.getInstance().getTime();
-        SimpleDateFormat formatBaru = new SimpleDateFormat("yyy-MM-dd/HH:mm:ss");
+        SimpleDateFormat formatBaru = new SimpleDateFormat("mm:ss");
         String waktuScanner = formatBaru.format(scannerTime);
 
         Date dateUser = null;
@@ -214,6 +217,7 @@ public class ResultScanActivity extends AppCompatActivity {
                 if (arrayListMac.get(mac).equals(arrayListMahasiswa.get(ni).getMac_user())) {
                     status = true;
                     namaMahasiswa = arrayListMahasiswa.get(ni).getNama();
+                    nimMahasiswa = arrayListMahasiswa.get(ni).getNim();
                     break;
                 }
             }
@@ -287,9 +291,14 @@ public class ResultScanActivity extends AppCompatActivity {
     private void absensiMahasiswa() {
         Date calender = Calendar.getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat dfJam = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat dfJam = new SimpleDateFormat("mm:ss");
         final String waktuAbsen = df.format(calender);
         final String jamAbsen = dfJam.format(calender);
+        Log.e("Proses Hasil ", nimMahasiswa);
+        Log.e("Proses Hasil ", idMk);
+        Log.e("Proses Hasil ", jamAbsen);
+        Log.e("Proses Hasil ", waktuAbsen);
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ServerSide.URL_ABSEN,
                 new Response.Listener<String>() {
                     @Override
